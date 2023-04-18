@@ -1,0 +1,54 @@
+server:
+  port: 8088
+  servlet:
+    context-path: /springboot
+  tomcat:
+    threads:
+      max: 200
+    uri-encoding: UTF-8
+    basedir: /data/logs/springboot/access_log
+    accesslog:
+      enabled: true
+      pattern: '{"i":"%{X-Forwarded-For}i","a":"%a","A":"%A","t":"%{yyyy-MM-dd HH:mm:ss.SSS}t","m":"%m","U":"%U","s":%s,"b":%b,"D":%D,"I":"%I"}'
+      suffix: .log
+
+
+
+spring:
+  profiles:
+    active: local
+  jpa:
+    show-sql: true
+    hibernate:
+      # 不透過@Entity自動化工程建立資料表,經由schema.sql建立資料表與data.sql新增資料
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+        # 查看 JDBC statements、JDBC batches 執行時間統計訊息
+        generate_statistics: true
+        # The order_inserts property tells Hibernate to take the time to group inserts by entity, creating larger batches.
+        order_inserts: true
+        # Can apply the same approach to deletes and updates
+        order_updates: true
+        jdbc:
+          batch_size: 200
+
+# 建立 DataSource 設置 prefix 前綴 springboot.datasource.oracle (自訂)
+# 最後一層設置 jdbc-url、username、password、driverClassName、maximumPoolSize、connectionTimeout (預設)
+springboot:
+  datasource:
+    oracle:
+      jdbc-url: jdbc:oracle:thin:@localhost:1521:xe
+      username: LOCAL
+      password: root
+      driverClassName: oracle.jdbc.driver.OracleDriver
+      maximumPoolSize: 2
+      connectionTimeout: 30000
+    mysql:
+      jdbc-url: jdbc:mysql://localhost:3306/local_db
+      username: root
+      password: root
+      driverClassName: com.mysql.cj.jdbc.Driver
+      maximumPoolSize: 2
+      connectionTimeout: 30000
