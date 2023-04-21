@@ -1,24 +1,25 @@
 package com.ecommerce.controller;
 
 import java.util.List;
-import java.util.Optional;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.ecommerce.dao.BeverageMemberDao;
-import com.ecommerce.entity.BeverageMember;
+
+import com.ecommerce.service.MemberService;
 import com.ecommerce.vo.GoodsVo;
 import com.ecommerce.vo.MemberInfo;
+
 import io.swagger.annotations.ApiOperation;
 
 @RestController
@@ -37,7 +38,7 @@ public class MemberController {
 	private HttpSession httpSession; 
 	
 	@Autowired
-	private BeverageMemberDao memberDao;
+	private MemberService memberService;
 
 	@ApiOperation(value = "購物網-會員-檢查登入")
 	@GetMapping(value = "/checkLogin")
@@ -54,18 +55,19 @@ public class MemberController {
 	@ApiOperation(value = "購物網-會員-登入")
 	@PostMapping(value = "/login")
 	public ResponseEntity<MemberInfo> login(@RequestBody MemberInfo member) {
-		/*
-			{
-			  "identificationNo": "A124243295",
-			  "cusPassword": "123"
-			}
-			{
-			  "identificationNo": "G436565447",
-			  "cusPassword": "123"
-			}
-		 */
+	/*
+		{
+		  "identificationNo": "A124243295",
+		  "cusPassword": "123"
+		}
+	 */
 		logger.info("HttpSession Login:" + httpSession.getId());
 		logger.info("Before:" + sessionMemberInfo.toString());
+		
+		
+		MemberInfo queryMemberInfo = memberService.queryMemberInfo(member);
+		
+		
 		
 		logger.info("After:" + sessionMemberInfo.toString());
 		
