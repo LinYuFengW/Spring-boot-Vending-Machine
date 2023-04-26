@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.training.mybatis.oracle.mapper.StoreInfoMapper">
+
+	<select id="queryStoreInfo"
+			parameterType="com.training.jpa.vo.StoreParameter"
+			resultType="com.training.jpa.vo.StoreInfoVo">
+		SELECT STORE_ID,
+		  STORE_NAME,
+		  SALES,
+		  STORE_DATE,
+		  GEOGRAPHY_ID
+		FROM STORE_INFORMATION
+		WHERE STORE_ID = #{storeID}
+		OR STORE_NAME = #{storeName}
+		OR STORE_DATE = #{storeDate}
+	</select>
+	
+	<select id="queryStoreInfoInStoreID" resultType="com.training.jpa.vo.StoreInfoVo">
+		SELECT STORE_ID,
+		  STORE_NAME,
+		  SALES,
+		  STORE_DATE,
+		  GEOGRAPHY_ID
+		FROM STORE_INFORMATION
+		WHERE STORE_ID IN
+		<foreach collection="storeIDs" item="storeID" open="(" close=")" separator=",">
+			#{storeID}
+		</foreach>
+	</select>
+	
+	<insert id="createStoreInfo" parameterType="com.training.jpa.vo.StoreParameter">
+		INSERT INTO STORE_INFORMATION (  
+		  STORE_ID,
+		  STORE_NAME,
+		  SALES,
+		  STORE_DATE,
+		  GEOGRAPHY_ID
+		) VALUES (  
+		    #{storeID},
+		    #{storeName},
+		    #{sales},
+		    #{storeDate},
+		    #{geographyID}
+		)
+	</insert>
+	
+	<insert id="batchCreateStoreInfos" parameterType="com.training.jpa.vo.StoreParameter">
+		<!-- Mybatis Oracle 透過 PL/SQL程序達成批次新增功能 -->
+		<foreach collection="stores" item="store" open="begin" close=";end;" separator=";">
+		INSERT INTO STORE_INFORMATION (
+		  STORE_ID,
+		  STORE_NAME,
+		  SALES,
+		  STORE_DATE,
+		  GEOGRAPHY_ID
+		) VALUES (
+		  #{store.storeID},
+		  #{store.storeName},
+		  #{store.sales},
+		  #{store.storeDate},
+		  #{store.geographyID}
+		)
+		</foreach>		
+	</insert>
+	
+	<update id="updateStoreInfo" parameterType="com.training.jpa.vo.StoreParameter">
+		UPDATE STORE_INFORMATION
+		SET 
+			STORE_NAME   = #{storeName},
+			SALES        = #{sales},
+			STORE_DATE   = #{storeDate},
+			GEOGRAPHY_ID = #{geographyID}
+		WHERE STORE_ID   = #{storeID}
+	</update> 
+
+	<update id="batchUpdateStoreInfo" parameterType="com.training.jpa.vo.StoreParameter">
+		<foreach collection="stores" item="store" open="begin" close=";end;" separator=";">
+		UPDATE STORE_INFORMATION
+		SET 
+			STORE_NAME   = #{store.storeName},
+			SALES        = #{store.sales},
+			STORE_DATE   = #{store.storeDate},
+			GEOGRAPHY_ID = #{store.geographyID}
+		WHERE STORE_ID   = #{store.storeID}
+		</foreach>
+	</update>
+	
+	<delete id="deleteStoreInfos">
+		DELETE FROM STORE_INFORMATION
+		WHERE STORE_ID IN
+		<foreach collection="storeIDs" item="storeID" open="(" close=")" separator=",">
+			#{storeID}
+		</foreach>
+	</delete>
+	
+</mapper>
