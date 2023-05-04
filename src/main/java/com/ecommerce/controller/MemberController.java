@@ -31,7 +31,7 @@ public class MemberController {
 	@Resource(name = "SessionMemberInfo")
 	private MemberInfo sessionMemberInfo;
 	
-	@Resource(name = "sessionCartGoods")
+	@Resource(name = "SessionCartGoods")
 	private List<GoodsVo> cartGoods;
 	
 	@Autowired
