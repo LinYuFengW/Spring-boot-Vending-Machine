@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.training.mybatis.oracle.mapper.StoreInfoMapper">
+<mapper namespace="com.ecommerce.oracle.mapper.MemberInfoMapper">
 
-	<select id="memberInfo" resultType="com.ecommerce.vo.MemberInfo">
+	<select id="memberInfo" parameterType="com.ecommerce.vo.MemberInfo" resultType="com.ecommerce.vo.MemberInfoVo">
 		SELECT IDENTIFICATION_NO,
 		  CUSTOMER_NAME,
 		  PASSWORD,
 		  PHONE,
 		  EMAIL
 		FROM BEVERAGE_MEMBER
-		WHERE IDENTIFICATION_NO = #{memberID}
+		WHERE IDENTIFICATION_NO = #{identificationNo}
 	</select>
 	
-	<update id="updateLoginTime">
+	<update id="updateLoginTime" parameterType="com.ecommerce.vo.MemberInfoVo">
 		UPDATE BEVERAGE_MEMBER
 		SET 
 			LOGIN_DATE = TO_DATE(#{loginDate}, 'YYYY-mm-DD HH24:MI:SS') 

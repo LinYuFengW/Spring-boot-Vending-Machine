@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ecommerce.service.MemberService;
 import com.ecommerce.vo.GoodsVo;
 import com.ecommerce.vo.MemberInfo;
+import com.ecommerce.vo.MemberInfoVo;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -31,6 +32,9 @@ public class MemberController {
 	@Resource(name = "SessionMemberInfo")
 	private MemberInfo sessionMemberInfo;
 	
+	@Resource(name = "SessionMemberInfoVo")
+	private MemberInfoVo sessionMemberInfoVo;
+	
 	@Resource(name = "SessionCartGoods")
 	private List<GoodsVo> cartGoods;
 	
@@ -42,7 +46,7 @@ public class MemberController {
 
 	@ApiOperation(value = "購物網-會員-檢查登入")
 	@GetMapping(value = "/checkLogin")
-	public ResponseEntity<MemberInfo> checkLogin() {
+	public ResponseEntity<MemberInfoVo> checkLogin() {
 		
 		logger.info("HttpSession checkLogin:" + httpSession.getId());
 		logger.info("CheckLogin:" + sessionMemberInfo.toString());
@@ -54,7 +58,7 @@ public class MemberController {
 	
 	@ApiOperation(value = "購物網-會員-登入")
 	@PostMapping(value = "/login")
-	public ResponseEntity<MemberInfo> login(@RequestBody MemberInfo member) {
+	public ResponseEntity<MemberInfo> login(@RequestBody MemberInfoVo member) {
 	/*
 		{
 		  "identificationNo": "A124243295",
@@ -62,21 +66,21 @@ public class MemberController {
 		}
 	 */
 		logger.info("HttpSession Login:" + httpSession.getId());
-		logger.info("Before:" + sessionMemberInfo.toString());
+		logger.info("Before:" + sessionMemberInfoVo.toString());
 		
 		
-		MemberInfo queryMemberInfo = memberService.queryMemberInfo(member);
+		sessionMemberInfo = memberService.queryMemberInfo(member);
 		
 		
 		
-		logger.info("After:" + sessionMemberInfo.toString());
+		logger.info("After:" + sessionMemberInfoVo.toString());
 		
-		return ResponseEntity.ok(null);
+		return ResponseEntity.ok(sessionMemberInfo);
 	}
 	
 	@ApiOperation(value = "購物網-會員-登出")
 	@GetMapping(value = "/logout")
-	public ResponseEntity<MemberInfo> logout() {
+	public ResponseEntity<MemberInfoVo> logout() {
 		
 		logger.info("HttpSession logout:" + httpSession.getId());
 
