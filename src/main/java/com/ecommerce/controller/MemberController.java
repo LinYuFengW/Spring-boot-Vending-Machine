@@ -1,5 +1,6 @@
 package com.ecommerce.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -46,14 +47,16 @@ public class MemberController {
 
 	@ApiOperation(value = "購物網-會員-檢查登入")
 	@GetMapping(value = "/checkLogin")
-	public ResponseEntity<MemberInfoVo> checkLogin() {
+	public ResponseEntity<MemberInfo> checkLogin() {
 		
 		logger.info("HttpSession checkLogin:" + httpSession.getId());
-		logger.info("CheckLogin:" + sessionMemberInfo.toString());
+		logger.info("CheckLogin:" + sessionMemberInfo.toString());	
 		
-		MemberInfo member = null;
-
-		return ResponseEntity.ok(null);
+		MemberInfo memberInfo = (MemberInfo) httpSession.getAttribute("MemberInfo");
+		// 判斷session是否有登入資料
+		sessionMemberInfo = memberInfo != null ? memberInfo : MemberInfo.builder().isLogin(false).build();
+		
+		return ResponseEntity.ok(sessionMemberInfo);
 	}
 	
 	@ApiOperation(value = "購物網-會員-登入")
@@ -66,12 +69,9 @@ public class MemberController {
 		}
 	 */
 		logger.info("HttpSession Login:" + httpSession.getId());
-		logger.info("Before:" + sessionMemberInfoVo.toString());
+		logger.info("Before:" + sessionMemberInfoVo.toString());	
 		
-		
-		sessionMemberInfo = memberService.queryMemberInfo(member);
-		
-		
+		sessionMemberInfo = memberService.queryMemberInfo(member);	
 		
 		logger.info("After:" + sessionMemberInfoVo.toString());
 		
@@ -80,12 +80,18 @@ public class MemberController {
 	
 	@ApiOperation(value = "購物網-會員-登出")
 	@GetMapping(value = "/logout")
-	public ResponseEntity<MemberInfoVo> logout() {
+	public ResponseEntity<MemberInfo> logout() {
 		
 		logger.info("HttpSession logout:" + httpSession.getId());
-
 		
-		return ResponseEntity.ok(null);
+		
+		httpSession.removeAttribute("MemberInfo");
+		MemberInfo memberInfo = (MemberInfo) httpSession.getAttribute("MemberInfo");
+		
+		// 判斷session是否還有登入資料
+		sessionMemberInfo = memberInfo != null ? memberInfo : MemberInfo.builder().isLogin(false).build();
+		
+		return ResponseEntity.ok(sessionMemberInfo);
 	}
 	
 	@ApiOperation(value = "商品加入購物車")
@@ -110,7 +116,13 @@ public class MemberController {
 			  "quantity": 16
 			}
 		 */
+		List<GoodsVo> shoppingCart = (List<GoodsVo>) httpSession.getAttribute("CartGoods");
+		// 從session取得已購買商品
+		cartGoods = shoppingCart != null ? shoppingCart : new ArrayList<GoodsVo>();
 		
+		cartGoods.add(goodsVo);
+		
+		httpSession.setAttribute("CartGoods", cartGoods);
 
 		return ResponseEntity.ok(cartGoods);
 	}
@@ -126,6 +138,10 @@ public class MemberController {
 	@DeleteMapping(value = "/clearCartGoods")
 	public ResponseEntity<List<GoodsVo>> clearCartGoods() {
 		
+	httpSession.removeAttribute("CartGoods");
+		
+	// 判斷session是否還有購物車商品
+	cartGoods = cartGoods != null ? cartGoods : new ArrayList<GoodsVo>();
 
 		return ResponseEntity.ok(cartGoods);
 	}

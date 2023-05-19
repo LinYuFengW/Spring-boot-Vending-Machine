@@ -57,27 +57,6 @@ public class SpringTrainingApplication extends SpringBootServletInitializer{
 		};
 	}
 	
-	@Bean("queryGoodsSales")
-	@Scope(scopeName = ConfigurableBeanFactory.SCOPE_SINGLETON) //預設
-//	@Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-	public GoodsReportSalesInfo queryGoodsSales() {
-		GoodsReportSalesInfo queryGoodsSales = new GoodsReportSalesInfo();
-		
-		return queryGoodsSales;
-	}
 	
-	@Bean("goodsDataInfo")
-	public GoodsDataInfo goodsDataInfo() {
-		GoodsDataInfo goodsDataInfo = new GoodsDataInfo();
-		
-		return goodsDataInfo;
-	}
-	
-	@Bean("beverageGoods")
-	public BeverageGoods beverageGoods() {
-		BeverageGoods beverageGoods = new BeverageGoods();
-		
-		return beverageGoods;
-	}
 	
 }
